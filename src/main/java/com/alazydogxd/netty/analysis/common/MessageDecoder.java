@@ -1,5 +1,7 @@
 package com.alazydogxd.netty.analysis.common;
 
+import com.alazydogxd.netty.analysis.exception.DecodeFailException;
+import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -11,10 +13,12 @@ public interface MessageDecoder<T> {
 
     /**
      * 报文解析
+     *
      * @param msg 报文
-     * @param in buffer
+     * @param in  buffer
      * @return 解析结果
+     * @throws DecodeFailException 解码失败
      */
-    T decode(Message msg, ByteBuf in);
+    T decode(Enum<? extends MessageField> msg, ByteBuf in) throws DecodeFailException;
 
 }

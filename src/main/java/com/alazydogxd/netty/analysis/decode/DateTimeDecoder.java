@@ -1,6 +1,6 @@
-package com.alazydogxd.netty.analysis.handler.decoder;
+package com.alazydogxd.netty.analysis.decode;
 
-import com.alazydogxd.netty.analysis.common.Message;
+import com.alazydogxd.netty.analysis.message.MessageField;
 import com.alazydogxd.netty.analysis.common.MessageDecoder;
 import io.netty.buffer.ByteBuf;
 
@@ -15,7 +15,7 @@ import java.time.ZoneOffset;
  */
 public class DateTimeDecoder implements MessageDecoder<LocalDateTime> {
     @Override
-    public LocalDateTime decode(Message msg, ByteBuf in) {
+    public LocalDateTime decode(Enum<? extends MessageField> msg, ByteBuf in) {
         long timestamp = in.readLong();
         return Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.of("+8")).toLocalDateTime();
     }

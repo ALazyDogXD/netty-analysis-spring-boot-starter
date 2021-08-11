@@ -1,5 +1,6 @@
 package com.alazydogxd.netty.analysis.server;
 
+import com.alazydogxd.netty.analysis.handler.MessageDecodeHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -20,7 +21,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * @author Mr_W
  * @date 2021/7/27 23:18
- * @description Netty
+ * @description Netty Server
  */
 public abstract class AbstractNettyServer {
 
@@ -202,7 +203,7 @@ public abstract class AbstractNettyServer {
 
         @Override
         protected void initChannel(Channel ch) throws Exception {
-            ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
+            ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO), new MessageDecodeHandler());
         }
 
     }

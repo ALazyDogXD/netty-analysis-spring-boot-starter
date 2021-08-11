@@ -1,11 +1,11 @@
-package com.alazydogxd.netty.analysis.common;
+package com.alazydogxd.netty.analysis.message;
 
 /**
  * @author Mr_W
  * @date 2021/7/27 23:34
- * @description 报文信息提供
+ * @description 报文字段信息提供
  */
-public interface Message {
+public interface MessageField {
 
     /**
      * 获取字段顺序
@@ -15,7 +15,7 @@ public interface Message {
     int getOrder();
 
     /**
-     * 获取字段字节数
+     * 获取字段字节数（-1 不定长度）
      *
      * @return 字段字节数
      */

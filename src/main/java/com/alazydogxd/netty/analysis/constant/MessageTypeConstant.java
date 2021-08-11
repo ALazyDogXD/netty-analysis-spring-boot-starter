@@ -1,4 +1,4 @@
-package com.alazydogxd.netty.analysis.common.constant;
+package com.alazydogxd.netty.analysis.constant;
 
 /**
  * @author Mr_W

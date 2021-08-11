@@ -1,19 +1,21 @@
 package com.alazydogxd.netty.analysis.handler;
 
-import com.alazydogxd.netty.analysis.common.Message;
+import com.alazydogxd.netty.analysis.common.DecodeStrategy;
+import com.alazydogxd.netty.analysis.exception.DecodeFailException;
+import com.alazydogxd.netty.analysis.message.MessageField;
 import com.alazydogxd.netty.analysis.common.MessageDecoder;
-import com.alazydogxd.netty.analysis.enums.BaseMessageType;
 import com.alazydogxd.netty.analysis.exception.UnExistMessageTypeException;
+import com.alazydogxd.netty.analysis.decode.strategy.FixedLenDecodeStrategy;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.alazydogxd.netty.analysis.util.DecodeUtil.baseAnalysis;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -27,54 +29,56 @@ public class MessageDecodeHandler extends ByteToMessageDecoder {
 
     private final Map<String, MessageDecoder<Object>> msgDecoders = new HashMap<>(16);
 
-    private String strategy;
+    private DecodeStrategy strategy;
 
-    public MessageDecodeHandler(String strategy) {
+    public MessageDecodeHandler() {
+        this(new FixedLenDecodeStrategy());
+    }
 
+    public MessageDecodeHandler(DecodeStrategy strategy) {
+        this(strategy, null);
+    }
+
+    public MessageDecodeHandler(DecodeStrategy strategy, Map<String, MessageDecoder<Object>> msgDecoders) {
+        this.strategy = strategy;
+        if (msgDecoders != null) {
+            this.msgDecoders.putAll(msgDecoders);
+        }
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        // TODO 报文解析
+        Object result = strategy.decode(ctx, in, this::analysis);
+        out.add(result);
     }
 
-    private Object analysis(Message msg, ByteBuf in) {
+    /**
+     * 添加解码器
+     *
+     * @param type       类型
+     * @param msgDecoder 解码器
+     */
+    public MessageDecodeHandler addMsgDecoders(String type, MessageDecoder<Object> msgDecoder) {
+        this.msgDecoders.put(type, msgDecoder);
+        return this;
+    }
+
+    /**
+     * 解析
+     *
+     * @param msg 报文
+     * @param in  ByteBuf
+     * @return 解析结果
+     */
+    private Object analysis(Enum<? extends MessageField> msg, ByteBuf in) throws DecodeFailException {
         Object result;
-        if ((result = analysisBase(msg.getType(), in)) != null) {
+        if ((result = baseAnalysis(((MessageField) msg).getType(), in)) != null) {
             return result;
         }
-        if (!msgDecoders.containsKey(msg.getType())) {
+        if (!msgDecoders.containsKey(((MessageField) msg).getType())) {
             throw new UnExistMessageTypeException("不存在报文类型");
         }
-        return msgDecoders.get(msg.getType()).decode(msg, in);
-    }
-
-    private Object analysisBase(String type, ByteBuf in) {
-        if (Arrays.stream(BaseMessageType.values()).map(Enum::toString).anyMatch(messageType -> messageType.equals(type))) {
-            return null;
-        }
-        switch (BaseMessageType.valueOf(type)) {
-            case BYTE:
-                return in.readByte();
-            case UNSIGNED_BYTE:
-                return in.readUnsignedByte();
-            case SHORT:
-                return in.readShort();
-            case UNSIGNED_SHORT:
-                return in.readUnsignedShort();
-            case INTEGER:
-                return in.readInt();
-            case UNSIGNED_INTEGER:
-                return in.readUnsignedInt();
-            case LONG:
-                return in.readLong();
-            case FLOAT:
-                return in.readFloat();
-            case DOUBLE:
-                return in.readDouble();
-            default:
-                return null;
-        }
+        return msgDecoders.get(((MessageField) msg).getType()).decode(msg, in);
     }
 
 }
