@@ -1,9 +1,9 @@
 package com.alazydogxd.netty.analysis.handler;
 
-import com.alazydogxd.netty.analysis.common.DecodeStrategy;
+import com.alazydogxd.netty.analysis.decode.DecodeStrategy;
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
 import com.alazydogxd.netty.analysis.message.MessageField;
-import com.alazydogxd.netty.analysis.common.MessageDecoder;
+import com.alazydogxd.netty.analysis.decode.MessageDecoder;
 import com.alazydogxd.netty.analysis.exception.UnExistMessageTypeException;
 import com.alazydogxd.netty.analysis.decode.strategy.FixedLenDecodeStrategy;
 import io.netty.buffer.ByteBuf;
@@ -47,7 +47,7 @@ public class MessageDecodeHandler extends ByteToMessageDecoder {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         Object result = strategy.decode(ctx, in, this::analysis);
         out.add(result);
     }

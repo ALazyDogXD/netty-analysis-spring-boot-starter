@@ -44,6 +44,20 @@ public class DecodeUtil {
                 return in.readFloat();
             case DOUBLE:
                 return in.readDouble();
+            case SHORT_LE:
+                return in.readShortLE();
+            case INTEGER_LE:
+                return in.readIntLE();
+            case UNSIGNED_INTEGER_LE:
+                return in.readUnsignedIntLE();
+            case UNSIGNED_SHORT_LE:
+                return in.readUnsignedShortLE();
+            case LONG_LE:
+                return in.readLongLE();
+            case FLOAT_LE:
+                return in.readFloatLE();
+            case DOUBLE_LE:
+                return in.readDoubleLE();
             default:
                 return null;
         }

@@ -1,7 +1,6 @@
 package com.alazydogxd.netty.analysis.decode;
 
 import com.alazydogxd.netty.analysis.annotation.CharFormat;
-import com.alazydogxd.netty.analysis.common.MessageDecoder;
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;

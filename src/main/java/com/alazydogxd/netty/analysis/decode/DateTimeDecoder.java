@@ -1,7 +1,6 @@
 package com.alazydogxd.netty.analysis.decode;
 
 import com.alazydogxd.netty.analysis.message.MessageField;
-import com.alazydogxd.netty.analysis.common.MessageDecoder;
 import io.netty.buffer.ByteBuf;
 
 import java.time.Instant;

@@ -1,4 +1,4 @@
-package com.alazydogxd.netty.analysis.common;
+package com.alazydogxd.netty.analysis.decode;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

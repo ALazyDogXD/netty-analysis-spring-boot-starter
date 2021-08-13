@@ -1,8 +1,8 @@
 package com.alazydogxd.netty.analysis.message;
 
 import cn.hutool.core.util.ClassUtil;
-import com.alazydogxd.netty.analysis.common.DecodeStrategy;
-import com.alazydogxd.netty.analysis.common.MessageDecoder;
+import com.alazydogxd.netty.analysis.decode.DecodeStrategy;
+import com.alazydogxd.netty.analysis.decode.MessageDecoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

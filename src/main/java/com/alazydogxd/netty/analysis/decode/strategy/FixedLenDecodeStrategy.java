@@ -1,7 +1,7 @@
 package com.alazydogxd.netty.analysis.decode.strategy;
 
-import com.alazydogxd.netty.analysis.common.Decode;
-import com.alazydogxd.netty.analysis.common.DecodeStrategy;
+import com.alazydogxd.netty.analysis.decode.Decode;
+import com.alazydogxd.netty.analysis.decode.DecodeStrategy;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

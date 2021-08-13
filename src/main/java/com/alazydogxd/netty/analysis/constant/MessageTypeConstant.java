@@ -15,6 +15,12 @@ public interface MessageTypeConstant {
     String UNSIGNED_INTEGER = "UNSIGNED_INTEGER";
     String LONG = "LONG";
     String FLOAT = "FLOAT";
+    String SHORT_LE = "SHORT_LE";
+    String UNSIGNED_SHORT_LE = "UNSIGNED_SHORT_LE";
+    String INTEGER_LE = "INTEGER_LE";
+    String UNSIGNED_INTEGER_LE = "UNSIGNED_INTEGER_LE";
+    String LONG_LE = "LONG_LE";
+    String FLOAT_LE = "FLOAT_LE";
     String DOUBLE = "DOUBLE";
     String STRING = "STRING";
     String DATETIME = "DATETIME";

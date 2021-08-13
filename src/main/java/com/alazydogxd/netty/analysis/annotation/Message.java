@@ -15,16 +15,11 @@ public @interface Message {
     /**
      * netty 服务名称
      */
-    String value();
+    String serverName();
 
     /**
      * 报文唯一标识
      */
-    String name();
-
-    /**
-     * 表示长度的字段
-     */
-    String lenField() default "";
+    String value();
 
 }

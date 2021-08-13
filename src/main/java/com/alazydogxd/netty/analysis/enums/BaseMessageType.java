@@ -23,7 +23,21 @@ public enum BaseMessageType {
     /* 单精度浮点数 */
     FLOAT(Float.class),
     /* 双精度浮点数 */
-    DOUBLE(Double.class);
+    DOUBLE(Double.class),
+    /* 短整型 小端 */
+    SHORT_LE(Short.class),
+    /* 无符号短整型 小端 */
+    UNSIGNED_SHORT_LE(Integer.class),
+    /* 整型 小端 */
+    INTEGER_LE(Integer.class),
+    /* 无符号整型 小端 */
+    UNSIGNED_INTEGER_LE(Long.class),
+    /* 长整型 小端 */
+    LONG_LE(Long.class),
+    /* 单精度浮点数 小端 */
+    FLOAT_LE(Float.class),
+    /* 双精度浮点数 小端 */
+    DOUBLE_LE(Double.class);
 
     BaseMessageType(Class<?> type) {
         this.type = type;
