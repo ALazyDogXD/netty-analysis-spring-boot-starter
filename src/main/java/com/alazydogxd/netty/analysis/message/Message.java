@@ -23,7 +23,8 @@ public class Message extends LinkedHashSet<Enum<? extends MessageField>> {
         return new Message(messageField);
     }
 
-    public Message(Collection<? extends Enum<? extends MessageField>> c) {
+    public Message(String name, Collection<? extends Enum<? extends MessageField>> c) {
+        this.name = name;
         super(c);
     }
 
