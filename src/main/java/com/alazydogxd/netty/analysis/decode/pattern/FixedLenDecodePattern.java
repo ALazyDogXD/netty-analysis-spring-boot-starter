@@ -1,7 +1,7 @@
-package com.alazydogxd.netty.analysis.decode.strategy;
+package com.alazydogxd.netty.analysis.decode.pattern;
 
 import com.alazydogxd.netty.analysis.decode.Decode;
-import com.alazydogxd.netty.analysis.decode.DecodeStrategy;
+import com.alazydogxd.netty.analysis.decode.DecodePattern;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -10,15 +10,15 @@ import io.netty.channel.ChannelHandlerContext;
  * @date 2021/7/30 23:03
  * @description 固定包长度，多余补 0
  */
-public class FixedLenDecodeStrategy implements DecodeStrategy {
+public class FixedLenDecodePattern implements DecodePattern {
 
     private int len;
 
-    public FixedLenDecodeStrategy() {
+    public FixedLenDecodePattern() {
         this(200);
     }
 
-    public FixedLenDecodeStrategy(int len) {
+    public FixedLenDecodePattern(int len) {
         this.len = len;
     }
 

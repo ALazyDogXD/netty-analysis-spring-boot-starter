@@ -43,7 +43,7 @@ public enum BaseMessageType {
         this.type = type;
     }
 
-    private Class<?> type;
+    private final Class<?> type;
 
     public Class<?> getType() {
         return type;

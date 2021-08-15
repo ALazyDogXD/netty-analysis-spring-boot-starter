@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
  * @date 2021/7/30 22:53
  * @description 自定义解码策略
  */
-public interface DecodeStrategy {
+public interface DecodePattern {
 
     /**
      * 解码

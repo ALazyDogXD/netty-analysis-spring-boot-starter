@@ -14,7 +14,7 @@ public class Message extends LinkedHashSet<Enum<? extends MessageField>> {
 
     private Message pre;
 
-    private Set<Message> nextMessages;
+    private final Set<Message> nextMessages = new HashSet<>(16);
 
     public static Message createMessage(Class<Enum<? extends MessageField>> type) {
         List<Enum<? extends MessageField>> messageField = Arrays.asList(type.getEnumConstants());
@@ -25,6 +25,12 @@ public class Message extends LinkedHashSet<Enum<? extends MessageField>> {
 
     public Message(Collection<? extends Enum<? extends MessageField>> c) {
         super(c);
+    }
+
+    public Message next(Message message) {
+        message.pre = this;
+        this.nextMessages.add(message);
+        return this;
     }
 
     /**
