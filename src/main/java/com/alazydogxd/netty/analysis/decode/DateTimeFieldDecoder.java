@@ -12,9 +12,9 @@ import java.time.ZoneOffset;
  * @date 2021/7/29 23:47
  * @description 日期解析
  */
-public class DateTimeDecoder implements MessageDecoder<LocalDateTime> {
+public class DateTimeFieldDecoder implements MessageFieldDecoder<LocalDateTime> {
     @Override
-    public LocalDateTime decode(Enum<? extends MessageField> msg, ByteBuf in) {
+    public LocalDateTime decode(MessageField msg, ByteBuf in) {
         long timestamp = in.readLong();
         return Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.of("+8")).toLocalDateTime();
     }

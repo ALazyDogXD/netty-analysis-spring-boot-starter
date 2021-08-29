@@ -16,19 +16,19 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @date 2021/7/29 23:42
  * @description 字符解析
  */
-public class StringDecoder implements MessageDecoder<String> {
+public class StringFieldDecoder implements MessageFieldDecoder<String> {
 
-    private static final Logger LOGGER = getLogger(StringDecoder.class);
+    private static final Logger LOGGER = getLogger(StringFieldDecoder.class);
 
     @Override
-    public String decode(Enum<? extends MessageField> msg, ByteBuf in) throws DecodeFailException {
+    public String decode(MessageField msg, ByteBuf in) throws DecodeFailException {
         CharFormat charFormat;
         try {
             charFormat = msg.getClass().getDeclaredField(msg.toString()).getAnnotation(CharFormat.class);
         } catch (NoSuchFieldException e) {
-            throw new DecodeFailException(String.format("字段 %s 解析失败", ((MessageField) msg).getFieldName()), e);
+            throw new DecodeFailException(String.format("字段 %s 解析失败", msg.getFieldName()), e);
         }
-        return in.readCharSequence(((MessageField) msg).getLen(), charFormat == null ? UTF_8 : Charset.forName(charFormat.value())).toString();
+        return in.readCharSequence(msg.getLen(), charFormat == null ? UTF_8 : Charset.forName(charFormat.value())).toString();
     }
 
 }

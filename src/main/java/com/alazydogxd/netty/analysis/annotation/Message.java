@@ -13,13 +13,18 @@ import java.lang.annotation.*;
 public @interface Message {
 
     /**
-     * netty 服务名称
-     */
-    String serverName();
-
-    /**
      * 报文唯一标识
      */
     String value();
+
+    /**
+     * netty 服务名称
+     */
+    String[] endpointName() default {};
+
+    /**
+     * 所需处理器
+     */
+    Class<?>[] handler() default {};
 
 }

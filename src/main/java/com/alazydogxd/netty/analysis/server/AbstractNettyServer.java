@@ -1,6 +1,8 @@
 package com.alazydogxd.netty.analysis.server;
 
 import com.alazydogxd.netty.analysis.handler.MessageDecodeHandler;
+import com.alazydogxd.netty.analysis.message.Configuration;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -47,6 +49,15 @@ public abstract class AbstractNettyServer {
 
     private Channel channel;
 
+    private String name;
+
+    private Configuration configuration;
+
+    public AbstractNettyServer(String name, Configuration configuration) {
+        this.name = name;
+        this.configuration = configuration;
+    }
+
     /**
      * 启动服务
      */
@@ -56,11 +67,11 @@ public abstract class AbstractNettyServer {
             if ((bootstrap = initServerBootstrap()) == null) {
 
                 bootstrap = new ServerBootstrap()
-                        .group(Optional.of(boss).orElse(boss = new NioEventLoopGroup()),
-                                Optional.of(worker).orElse(worker = new NioEventLoopGroup()))
+                        .group(Optional.of(boss).orElse(boss = new NioEventLoopGroup(1)),
+                                Optional.of(worker).orElse(worker = new NioEventLoopGroup(10)))
                         .channel(channelClass == null ? (channelClass = NioServerSocketChannel.class) : channelClass)
                         .handler(handler == null ? (handler = new DefaultHandler()) : handler)
-                        .childHandler(childHandler == null ? (childHandler = new DefaultChildHandler()) : childHandler);
+                        .childHandler(childHandler == null ? (childHandler = new DefaultChildHandler(name, configuration)) : childHandler);
                 options.forEach((option, value) -> bootstrap.option(option, value));
                 childOptions.forEach((childOption, value) -> bootstrap.childOption(childOption, value));
 
@@ -190,6 +201,10 @@ public abstract class AbstractNettyServer {
         return channel;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public static class DefaultHandler extends ChannelInitializer<Channel> {
 
         @Override
@@ -201,9 +216,18 @@ public abstract class AbstractNettyServer {
 
     public static class DefaultChildHandler extends ChannelInitializer<Channel> {
 
+        private String endpointName;
+
+        private Configuration configuration;
+
+        public DefaultChildHandler(String endpointName, Configuration configuration) {
+            this.endpointName = endpointName;
+            this.configuration = configuration;
+        }
+
         @Override
         protected void initChannel(Channel ch) throws Exception {
-            ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO), new MessageDecodeHandler());
+            ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO), new MessageDecodeHandler(endpointName, configuration));
         }
 
     }

@@ -4,21 +4,73 @@ import com.alazydogxd.netty.analysis.exception.DecodeFailException;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
 
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author Mr_W
- * @date 2021/7/29 23:33
- * @description 报文解析
+ * @date 2021/8/29 22:00
+ * @description 报文解析器
  */
-public interface MessageDecoder<T> {
+public class MessageDecoder {
 
-    /**
-     * 报文解析
-     *
-     * @param msg 报文
-     * @param in  buffer
-     * @return 解析结果
-     * @throws DecodeFailException 解码失败
-     */
-    T decode(Enum<? extends MessageField> msg, ByteBuf in) throws DecodeFailException;
+    private List<List<MessageField>> messageFields = new LinkedList<>();
+
+    private int index;
+
+    private List<MessageField> currentMessageFields;
+
+    private int currentIndex = -1;
+
+    private List<List<MessageField>> prepareToAdd;
+
+    private MessageDecoder() {}
+
+    public static MessageDecoder createMessageDecoder(List<MessageField> messageFields) {
+        MessageDecoder messageDecoder = new MessageDecoder();
+        messageDecoder.messageFields.add(messageFields);
+        messageDecoder.currentMessageFields = messageFields;
+        return messageDecoder;
+    }
+
+    public void addMessageField(List<MessageField> messageFields) {
+        messageFields.sort(Comparator.comparingInt(MessageField::getOrder));
+        if (prepareToAdd == null) {
+            prepareToAdd = new LinkedList<>();
+        }
+        prepareToAdd.add(messageFields);
+    }
+
+    public Object decode(ByteBuf in, Decode decode) throws DecodeFailException {
+        return decode.decode(getMessageField(), in);
+    }
+
+    public MessageField getCurrentMessageField() {
+        if (!isHaveMessageField()) {
+            if (prepareToAdd != null) {
+                return prepareToAdd.get(0).get(0);
+            }
+            return null;
+        }
+        return currentMessageFields.get(currentIndex);
+    }
+
+    private MessageField getMessageField() {
+        if (!isHaveMessageField()) {
+            if (prepareToAdd != null) {
+                messageFields.addAll(++index, prepareToAdd);
+                currentMessageFields = messageFields.get(index);
+            } else {
+                return null;
+            }
+            prepareToAdd = null;
+        }
+        return currentMessageFields.get(++currentIndex);
+    }
+
+    public boolean isHaveMessageField() {
+        return currentIndex < currentMessageFields.size();
+    }
 
 }

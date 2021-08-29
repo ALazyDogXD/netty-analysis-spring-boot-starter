@@ -6,20 +6,19 @@ import io.netty.buffer.ByteBuf;
 
 /**
  * @author Mr_W
- * @date 2021/7/30 23:20
- * @description 解码
+ * @date 2021/7/29 23:33
+ * @description 报文字段解析
  */
-@FunctionalInterface
-public interface Decode {
+public interface MessageFieldDecoder<T> {
 
     /**
-     * 解码
+     * 报文解析
      *
      * @param msg 报文
-     * @param in  ByteBuf
+     * @param in  buffer
      * @return 解析结果
      * @throws DecodeFailException 解码失败
      */
-    Object decode(MessageField msg, ByteBuf in) throws DecodeFailException;
+    T decode(MessageField msg, ByteBuf in) throws DecodeFailException;
 
 }
