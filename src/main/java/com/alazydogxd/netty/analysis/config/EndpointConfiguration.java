@@ -1,6 +1,6 @@
 //package com.alazydogxd.netty.analysis.config;
 //
-//import com.alazydogxd.netty.analysis.server.UdpServer;
+//import com.alazydogxd.netty.analysis.endpoint.server.UdpServer;
 //import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;

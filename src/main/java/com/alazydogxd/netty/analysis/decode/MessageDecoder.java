@@ -25,7 +25,8 @@ public class MessageDecoder {
 
     private List<List<MessageField>> prepareToAdd;
 
-    private MessageDecoder() {}
+    private MessageDecoder() {
+    }
 
     public static MessageDecoder createMessageDecoder(List<MessageField> messageFields) {
         MessageDecoder messageDecoder = new MessageDecoder();
