@@ -14,6 +14,11 @@ import java.time.ZoneOffset;
  */
 public class DateTimeFieldDecoder implements MessageFieldDecoder<LocalDateTime> {
     @Override
+    public String type() {
+        return "DATETIME";
+    }
+
+    @Override
     public LocalDateTime decode(MessageField msg, ByteBuf in) {
         long timestamp = in.readLong();
         return Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.of("+8")).toLocalDateTime();

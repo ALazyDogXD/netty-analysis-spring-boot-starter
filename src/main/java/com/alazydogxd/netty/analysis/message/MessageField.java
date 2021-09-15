@@ -42,4 +42,16 @@ public interface MessageField {
      */
     String getType();
 
+    /**
+     * 获取报文所属分类
+     * @return 报文所属分类
+     */
+    String getSort();
+
+    /**
+     * 获取报文唯一标识
+     * @return 报文唯一标识
+     */
+    String getUniqueMark();
+
 }

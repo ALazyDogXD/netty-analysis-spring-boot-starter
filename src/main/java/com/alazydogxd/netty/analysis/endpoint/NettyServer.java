@@ -1,7 +1,7 @@
 package com.alazydogxd.netty.analysis.endpoint;
 
 import com.alazydogxd.netty.analysis.handler.MessageDecodeHandler;
-import com.alazydogxd.netty.analysis.message.Configuration;
+import com.alazydogxd.netty.analysis.message.MessageAnalysisConfiguration;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -26,18 +26,18 @@ public class NettyServer extends AbstractNettyEndpoint<ServerBootstrap, ServerCh
 
     protected SocketAddress address;
 
-    public NettyServer(String name, Configuration configuration) {
+    public NettyServer(String name, MessageAnalysisConfiguration configuration) {
         super(name, configuration);
     }
 
     @Override
     protected ServerBootstrap initBootstrap() {
-        ServerBootstrap bootstrap = new ServerBootstrap()
-                .group(Optional.of(boss).orElse(boss = new NioEventLoopGroup(1)),
-                        Optional.of(worker).orElse(worker = new NioEventLoopGroup(10)))
-                .channel(channelClass == null ? (channelClass = NioServerSocketChannel.class) : channelClass)
-                .handler(handler == null ? (handler = new DefaultHandler()) : handler)
-                .childHandler(childHandler == null ? (childHandler = new DefaultChildHandler(name, configuration)) : childHandler);
+        ServerBootstrap bootstrap = new ServerBootstrap();
+        bootstrap.group(Optional.ofNullable(boss).orElse(boss = new NioEventLoopGroup(1)),
+                        Optional.ofNullable(worker).orElse(worker = new NioEventLoopGroup(10)));
+        bootstrap.channel(channelClass == null ? (channelClass = NioServerSocketChannel.class) : channelClass);
+        bootstrap.handler(handler == null ? (handler = new DefaultHandler()) : handler);
+        bootstrap.childHandler(childHandler == null ? (childHandler = new DefaultChildHandler(name, configuration)) : childHandler);
         options.forEach(bootstrap::option);
         childOptions.forEach(bootstrap::childOption);
 
@@ -78,28 +78,28 @@ public class NettyServer extends AbstractNettyEndpoint<ServerBootstrap, ServerCh
         return future;
     }
 
-    public static class DefaultHandler extends ChannelInitializer<NioServerSocketChannel> {
+    public static class DefaultHandler extends ChannelInitializer<Channel> {
 
         @Override
-        protected void initChannel(NioServerSocketChannel ch) throws Exception {
+        protected void initChannel(Channel ch) throws Exception {
             ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
         }
 
     }
 
-    public static class DefaultChildHandler extends ChannelInitializer<NioServerSocketChannel> {
+    public static class DefaultChildHandler extends ChannelInitializer<Channel> {
 
         private String endpointName;
 
-        private Configuration configuration;
+        private MessageAnalysisConfiguration configuration;
 
-        public DefaultChildHandler(String endpointName, Configuration configuration) {
+        public DefaultChildHandler(String endpointName, MessageAnalysisConfiguration configuration) {
             this.endpointName = endpointName;
             this.configuration = configuration;
         }
 
         @Override
-        protected void initChannel(NioServerSocketChannel ch) throws Exception {
+        protected void initChannel(Channel ch) throws Exception {
             ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO), new MessageDecodeHandler(endpointName, configuration));
         }
 

@@ -22,6 +22,11 @@ public class DefaultDecodePattern extends AbstractDecodePattern {
     }
 
     @Override
+    public String getPatternName() {
+        return "default";
+    }
+
+    @Override
     public Object processDecode(ChannelHandlerContext ctx,
                                 ByteBuf in,
                                 Decode decode,

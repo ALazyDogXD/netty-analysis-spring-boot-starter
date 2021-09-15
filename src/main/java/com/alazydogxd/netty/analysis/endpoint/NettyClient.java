@@ -1,6 +1,6 @@
 package com.alazydogxd.netty.analysis.endpoint;
 
-import com.alazydogxd.netty.analysis.message.Configuration;
+import com.alazydogxd.netty.analysis.message.MessageAnalysisConfiguration;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -23,7 +23,7 @@ public class NettyClient extends AbstractNettyEndpoint<Bootstrap, Channel> {
 
     private final Map<String, ChannelFuture> CONNECT_MAP = new ConcurrentHashMap<>(16);
 
-    public NettyClient(String name, Configuration configuration, Map<String, SocketAddress> address) {
+    public NettyClient(String name, MessageAnalysisConfiguration configuration, Map<String, SocketAddress> address) {
         super(name, configuration);
         this.address = address;
     }

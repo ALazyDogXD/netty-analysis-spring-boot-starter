@@ -1,7 +1,7 @@
 package com.alazydogxd.netty.analysis.endpoint;
 
 import com.alazydogxd.netty.analysis.exception.BootstrapFailException;
-import com.alazydogxd.netty.analysis.message.Configuration;
+import com.alazydogxd.netty.analysis.message.MessageAnalysisConfiguration;
 import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -36,17 +36,17 @@ public abstract class AbstractNettyEndpoint<T extends AbstractBootstrap<T, C>, C
 
     protected Class<? extends C> channelClass;
 
-    protected ChannelInitializer<? extends C> handler;
+    protected ChannelInitializer<? extends Channel> handler;
 
-    protected ChannelInitializer<? extends C> childHandler;
+    protected ChannelInitializer<? extends Channel> childHandler;
 
     protected final Map<ChannelOption<Object>, Object> options = new LinkedHashMap<>(16);
 
     protected final Map<ChannelOption<Object>, Object> childOptions = new LinkedHashMap<>(16);
 
-    protected Configuration configuration;
+    protected MessageAnalysisConfiguration configuration;
 
-    protected AbstractNettyEndpoint(String name, Configuration configuration) {
+    protected AbstractNettyEndpoint(String name, MessageAnalysisConfiguration configuration) {
         this.name = name;
         this.configuration = configuration;
     }

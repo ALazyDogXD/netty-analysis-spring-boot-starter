@@ -21,6 +21,11 @@ public class StringFieldDecoder implements MessageFieldDecoder<String> {
     private static final Logger LOGGER = getLogger(StringFieldDecoder.class);
 
     @Override
+    public String type() {
+        return "CHAR";
+    }
+
+    @Override
     public String decode(MessageField msg, ByteBuf in) throws DecodeFailException {
         CharFormat charFormat;
         try {

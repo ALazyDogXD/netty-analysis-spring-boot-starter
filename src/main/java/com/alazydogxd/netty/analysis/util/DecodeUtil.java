@@ -22,7 +22,7 @@ public class DecodeUtil {
      * @return 解析结果
      */
     public static Object baseAnalysis(String type, ByteBuf in) {
-        if (Arrays.stream(BaseMessageType.values()).anyMatch(messageType -> messageType.toString().equals(type))) {
+        if (Arrays.stream(BaseMessageType.values()).noneMatch(messageType -> messageType.toString().equals(type))) {
             return null;
         }
         switch (BaseMessageType.valueOf(type)) {

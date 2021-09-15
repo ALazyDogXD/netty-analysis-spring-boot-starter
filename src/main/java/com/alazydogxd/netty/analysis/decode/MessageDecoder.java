@@ -71,7 +71,7 @@ public class MessageDecoder {
     }
 
     public boolean isHaveMessageField() {
-        return currentIndex < currentMessageFields.size();
+        return currentIndex < currentMessageFields.size() - 1;
     }
 
 }

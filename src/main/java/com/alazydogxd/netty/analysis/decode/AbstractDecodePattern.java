@@ -1,14 +1,12 @@
 package com.alazydogxd.netty.analysis.decode;
 
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
-import com.alazydogxd.netty.analysis.exception.LostEndpointNameException;
-import com.alazydogxd.netty.analysis.message.Configuration;
+import com.alazydogxd.netty.analysis.message.MessageAnalysisConfiguration;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,9 +22,9 @@ public abstract class AbstractDecodePattern implements BeanPostProcessor {
 
     private List<MessageField> initMessageField;
 
-    private String endpointName;
+    private List<String> endpointNames = new ArrayList<>(10);
 
-    private Configuration configuration;
+    private MessageAnalysisConfiguration configuration;
 
     private List<MessageFieldSupport> messageFieldSupports = new ArrayList<>(15);
 
@@ -34,16 +32,20 @@ public abstract class AbstractDecodePattern implements BeanPostProcessor {
         this.initMessageField = new ArrayList<>(initMessageField);
     }
 
+    /**
+     * 策略名称
+     *
+     * @return 策略名称
+     */
+    public abstract String getPatternName();
+
     public AbstractDecodePattern setEndpointName(String endpointName) {
-        this.endpointName = endpointName;
+        this.endpointNames.add(endpointName);
         return this;
     }
 
-    public String getEndpointName() {
-        if (StringUtils.isEmpty(endpointName.trim())) {
-            throw new LostEndpointNameException(String.format("%s 丢失终端名称", this.getClass().getSimpleName()));
-        }
-        return endpointName;
+    public boolean isHave(String endpointName) {
+        return endpointNames.contains(endpointName);
     }
 
     /**
@@ -92,7 +94,7 @@ public abstract class AbstractDecodePattern implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof MessageFieldSupport) {
             AddMessageField addMessageField = bean.getClass().getAnnotation(AddMessageField.class);
-            if (addMessageField != null && addMessageField.endpointName().equals(getEndpointName())) {
+            if (addMessageField != null && isHave(addMessageField.endpointName())) {
                 messageFieldSupports.add((MessageFieldSupport) bean);
             }
         }

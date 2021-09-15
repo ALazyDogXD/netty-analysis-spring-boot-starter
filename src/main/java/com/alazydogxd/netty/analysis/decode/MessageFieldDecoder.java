@@ -12,6 +12,13 @@ import io.netty.buffer.ByteBuf;
 public interface MessageFieldDecoder<T> {
 
     /**
+     * 解析类型
+     *
+     * @return 类型
+     */
+    String type();
+
+    /**
      * 报文解析
      *
      * @param msg 报文
