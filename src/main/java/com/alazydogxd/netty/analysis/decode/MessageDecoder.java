@@ -1,6 +1,7 @@
 package com.alazydogxd.netty.analysis.decode;
 
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
+import com.alazydogxd.netty.analysis.exception.MessageAnalysisFailException;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
 
@@ -43,34 +44,41 @@ public class MessageDecoder {
         prepareToAdd.add(messageFields);
     }
 
-    public Object decode(ByteBuf in, Decode decode) throws DecodeFailException {
+    public Object decode(ByteBuf in, Decode decode) throws DecodeFailException, MessageAnalysisFailException {
         return decode.decode(getMessageField(), in);
     }
 
     public MessageField getCurrentMessageField() {
-        if (!isHaveMessageField()) {
-            if (prepareToAdd != null) {
-                return prepareToAdd.get(0).get(0);
-            }
-            return null;
-        }
+//        if (!isHaveMessageField()) {
+//            if (prepareToAdd != null) {
+//                return prepareToAdd.get(0).get(0);
+//            }
+//            return null;
+//        }
         return currentMessageFields.get(currentIndex);
     }
 
     private MessageField getMessageField() {
-        if (!isHaveMessageField()) {
+        if (!isHaveCurrentMessageField()) {
             if (prepareToAdd != null) {
                 messageFields.addAll(++index, prepareToAdd);
                 currentMessageFields = messageFields.get(index);
+                prepareToAdd = null;
+            } else if (isHaveMessageField()) {
+                currentMessageFields = messageFields.get(++index);
             } else {
                 return null;
             }
-            prepareToAdd = null;
+            currentIndex = -1;
         }
         return currentMessageFields.get(++currentIndex);
     }
 
     public boolean isHaveMessageField() {
+        return currentIndex < currentMessageFields.size() - 1 || index < messageFields.size() - 1 || (prepareToAdd != null && index < messageFields.size() + prepareToAdd.size() - 1);
+    }
+
+    public boolean isHaveCurrentMessageField() {
         return currentIndex < currentMessageFields.size() - 1;
     }
 

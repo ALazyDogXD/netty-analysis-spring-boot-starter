@@ -2,6 +2,7 @@ package com.alazydogxd.netty.analysis.decode;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.lang.annotation.*;
 
@@ -20,6 +21,6 @@ public @interface AddMessageField {
     @AliasFor(annotation = Component.class)
     String value() default "";
 
-    String endpointName();
+    String[] endpointNames();
 
 }

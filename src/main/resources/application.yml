@@ -1,29 +1,29 @@
-# 应用名称
-spring.application.name=netty-analysis-spring-boot-starter
-  # 应用服务 WEB 访问端口
-server.port=8080
+## 应用名称
+#spring.application.name=netty-analysis-spring-boot-starter
+#  # 应用服务 WEB 访问端口
+#server.port=8080
 
-spring:
-  lazy-dog:
-    analysis:
-      endpoint:
-        server:
-          test:
-            protocol: udp
-            port: 9999
-            boss-processes: 1
-            worker-processes: 10
-            encode-pattern:
-            decode-pattern:
-            self:
-        client:
-          test:
-            protocol: udp
-            port: 9999
-            remote: 127.0.0.1:8888
-            processes: 1
-            time-out: 1000
-            encode-pattern:
-            decode-pattern:
-            self:
-        message-package:
+#spring:
+#  lazy-dog:
+#    analysis:
+#      endpoint:
+#        server:
+#          test:
+#            protocol: udp
+#            port: 9999
+#            boss-processes: 1
+#            worker-processes: 10
+#            encode-pattern:
+#            decode-pattern:
+#            self:
+#        client:
+#          test:
+#            protocol: udp
+#            port: 9999
+#            remote: 127.0.0.1:8888
+#            processes: 1
+#            time-out: 1000
+#            encode-pattern:
+#            decode-pattern:
+#            self:
+#        message-package:

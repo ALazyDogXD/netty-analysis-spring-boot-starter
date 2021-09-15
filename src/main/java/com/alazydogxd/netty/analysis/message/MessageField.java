@@ -29,11 +29,11 @@ public interface MessageField {
     String getFieldName();
 
     /**
-     * 获取字段默认值
+     * 获取字段默认值或编码值
      *
-     * @return 字段默认值
+     * @return 字段默认值或编码值
      */
-    Object getDefaultValue();
+    Object getValue();
 
     /**
      * 获取字段类型
@@ -44,12 +44,14 @@ public interface MessageField {
 
     /**
      * 获取报文所属分类
+     *
      * @return 报文所属分类
      */
     String getSort();
 
     /**
      * 获取报文唯一标识
+     *
      * @return 报文唯一标识
      */
     String getUniqueMark();

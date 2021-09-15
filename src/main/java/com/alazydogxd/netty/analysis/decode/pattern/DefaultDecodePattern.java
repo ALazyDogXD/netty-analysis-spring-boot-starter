@@ -4,6 +4,7 @@ import com.alazydogxd.netty.analysis.decode.Decode;
 import com.alazydogxd.netty.analysis.decode.AbstractDecodePattern;
 import com.alazydogxd.netty.analysis.decode.MessageDecoder;
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
+import com.alazydogxd.netty.analysis.exception.MessageAnalysisFailException;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -30,7 +31,7 @@ public class DefaultDecodePattern extends AbstractDecodePattern {
     public Object processDecode(ChannelHandlerContext ctx,
                                 ByteBuf in,
                                 Decode decode,
-                                MessageDecoder messageDecoder) throws DecodeFailException {
+                                MessageDecoder messageDecoder) throws DecodeFailException, MessageAnalysisFailException {
         return messageDecoder.decode(in, decode);
     }
 }

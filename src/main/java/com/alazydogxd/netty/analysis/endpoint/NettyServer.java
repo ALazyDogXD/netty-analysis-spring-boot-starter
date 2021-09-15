@@ -1,5 +1,6 @@
 package com.alazydogxd.netty.analysis.endpoint;
 
+import com.alazydogxd.netty.analysis.decode.AbstractDecodePattern;
 import com.alazydogxd.netty.analysis.handler.MessageDecodeHandler;
 import com.alazydogxd.netty.analysis.message.MessageAnalysisConfiguration;
 import io.netty.bootstrap.ServerBootstrap;
@@ -13,6 +14,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 import java.net.SocketAddress;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -26,18 +28,21 @@ public class NettyServer extends AbstractNettyEndpoint<ServerBootstrap, ServerCh
 
     protected SocketAddress address;
 
+    protected AbstractDecodePattern decodePattern;
+
     public NettyServer(String name, MessageAnalysisConfiguration configuration) {
         super(name, configuration);
     }
 
     @Override
     protected ServerBootstrap initBootstrap() {
+        Objects.requireNonNull(decodePattern, name + " 解析模式为空");
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(Optional.ofNullable(boss).orElse(boss = new NioEventLoopGroup(1)),
-                        Optional.ofNullable(worker).orElse(worker = new NioEventLoopGroup(10)));
+                Optional.ofNullable(worker).orElse(worker = new NioEventLoopGroup(10)));
         bootstrap.channel(channelClass == null ? (channelClass = NioServerSocketChannel.class) : channelClass);
         bootstrap.handler(handler == null ? (handler = new DefaultHandler()) : handler);
-        bootstrap.childHandler(childHandler == null ? (childHandler = new DefaultChildHandler(name, configuration)) : childHandler);
+        bootstrap.childHandler(childHandler == null ? (childHandler = new DefaultChildHandler(decodePattern, configuration)) : childHandler);
         options.forEach(bootstrap::option);
         childOptions.forEach(bootstrap::childOption);
 
@@ -57,6 +62,17 @@ public class NettyServer extends AbstractNettyEndpoint<ServerBootstrap, ServerCh
      */
     public final NettyServer socketAddress(SocketAddress address) {
         this.address = address;
+        return this;
+    }
+
+    /**
+     * 解析模式
+     *
+     * @param decodePattern 解析模式
+     * @return AbstractNettyEndpoint
+     */
+    public final NettyServer decodePattern(AbstractDecodePattern decodePattern) {
+        this.decodePattern = decodePattern.setEndpointName(name);
         return this;
     }
 
@@ -89,18 +105,18 @@ public class NettyServer extends AbstractNettyEndpoint<ServerBootstrap, ServerCh
 
     public static class DefaultChildHandler extends ChannelInitializer<Channel> {
 
-        private String endpointName;
+        private AbstractDecodePattern decodePattern;
 
         private MessageAnalysisConfiguration configuration;
 
-        public DefaultChildHandler(String endpointName, MessageAnalysisConfiguration configuration) {
-            this.endpointName = endpointName;
+        public DefaultChildHandler(AbstractDecodePattern decodePattern, MessageAnalysisConfiguration configuration) {
+            this.decodePattern = decodePattern;
             this.configuration = configuration;
         }
 
         @Override
         protected void initChannel(Channel ch) throws Exception {
-            ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO), new MessageDecodeHandler(endpointName, configuration));
+            ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO), new MessageDecodeHandler(decodePattern, configuration));
         }
 
     }

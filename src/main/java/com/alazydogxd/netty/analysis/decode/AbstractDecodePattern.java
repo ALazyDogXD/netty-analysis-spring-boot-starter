@@ -1,6 +1,7 @@
 package com.alazydogxd.netty.analysis.decode;
 
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
+import com.alazydogxd.netty.analysis.exception.MessageAnalysisFailException;
 import com.alazydogxd.netty.analysis.message.MessageAnalysisConfiguration;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
@@ -8,10 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Mr_W
@@ -22,7 +20,7 @@ public abstract class AbstractDecodePattern implements BeanPostProcessor {
 
     private List<MessageField> initMessageField;
 
-    private List<String> endpointNames = new ArrayList<>(10);
+    private Set<String> endpointNames = new HashSet<>(16);
 
     private MessageAnalysisConfiguration configuration;
 
@@ -44,8 +42,8 @@ public abstract class AbstractDecodePattern implements BeanPostProcessor {
         return this;
     }
 
-    public boolean isHave(String endpointName) {
-        return endpointNames.contains(endpointName);
+    public boolean isHave(String[] endpointName) {
+        return endpointNames.containsAll(Arrays.asList(endpointName));
     }
 
     /**
@@ -56,20 +54,25 @@ public abstract class AbstractDecodePattern implements BeanPostProcessor {
      * @param decode         解析方法
      * @param messageDecoder 解码器
      * @return 解析结果
-     * @throws DecodeFailException 解析失败
+     * @throws DecodeFailException          解码失败
+     * @throws MessageAnalysisFailException 解析失败
      */
     public abstract Object processDecode(ChannelHandlerContext ctx,
                                          ByteBuf in,
                                          Decode decode,
-                                         MessageDecoder messageDecoder) throws DecodeFailException;
+                                         MessageDecoder messageDecoder) throws DecodeFailException, MessageAnalysisFailException;
 
-    public Object decode(ChannelHandlerContext ctx, ByteBuf in, Decode decode) throws DecodeFailException {
-        Map<String, Object> result = new HashMap<>(64);
+    public Object decode(ChannelHandlerContext ctx, ByteBuf in, Decode decode) throws DecodeFailException, MessageAnalysisFailException {
+        Map<String, Map<String, Object>> result = new LinkedHashMap<>(16);
         MessageDecoder messageDecoder = MessageDecoder.createMessageDecoder(initMessageField);
 
         while (messageDecoder.isHaveMessageField()) {
             Object resultField = processDecode(ctx, in, decode, messageDecoder);
-            result.put(messageDecoder.getCurrentMessageField().getFieldName(), resultField);
+            MessageField currentMessageField = messageDecoder.getCurrentMessageField();
+            if (!result.containsKey(currentMessageField.getUniqueMark())) {
+                result.put(currentMessageField.getUniqueMark(), new LinkedHashMap<>(32));
+            }
+            result.get(currentMessageField.getUniqueMark()).put(messageDecoder.getCurrentMessageField().getFieldName(), resultField);
             handleMessageFields(messageDecoder.getCurrentMessageField(), resultField, messageDecoder);
         }
 
@@ -86,7 +89,7 @@ public abstract class AbstractDecodePattern implements BeanPostProcessor {
         });
     }
 
-    protected Object buildResult(Map<String, Object> result) {
+    protected Object buildResult(Map<String, Map<String, Object>> result) {
         return result;
     }
 
@@ -94,7 +97,7 @@ public abstract class AbstractDecodePattern implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof MessageFieldSupport) {
             AddMessageField addMessageField = bean.getClass().getAnnotation(AddMessageField.class);
-            if (addMessageField != null && isHave(addMessageField.endpointName())) {
+            if (addMessageField != null && isHave(addMessageField.endpointNames())) {
                 messageFieldSupports.add((MessageFieldSupport) bean);
             }
         }

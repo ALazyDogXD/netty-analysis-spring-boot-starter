@@ -1,6 +1,7 @@
 package com.alazydogxd.netty.analysis.decode;
 
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
+import com.alazydogxd.netty.analysis.exception.MessageAnalysisFailException;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
 
@@ -20,6 +21,6 @@ public interface Decode {
      * @return 解析结果
      * @throws DecodeFailException 解码失败
      */
-    Object decode(MessageField msg, ByteBuf in) throws DecodeFailException;
+    Object decode(MessageField msg, ByteBuf in) throws DecodeFailException, MessageAnalysisFailException;
 
 }
