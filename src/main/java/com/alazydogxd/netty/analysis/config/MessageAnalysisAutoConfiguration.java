@@ -10,7 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2021/8/20 0:31
  * @description 自动配置类
  */
-//@EnableAutoConfiguration
 @ComponentScan("com.alazydogxd.netty.analysis")
 public class MessageAnalysisAutoConfiguration {
 

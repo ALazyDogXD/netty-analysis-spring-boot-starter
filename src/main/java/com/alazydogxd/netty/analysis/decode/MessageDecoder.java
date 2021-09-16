@@ -49,12 +49,6 @@ public class MessageDecoder {
     }
 
     public MessageField getCurrentMessageField() {
-//        if (!isHaveMessageField()) {
-//            if (prepareToAdd != null) {
-//                return prepareToAdd.get(0).get(0);
-//            }
-//            return null;
-//        }
         return currentMessageFields.get(currentIndex);
     }
 

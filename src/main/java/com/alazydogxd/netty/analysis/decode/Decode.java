@@ -19,7 +19,8 @@ public interface Decode {
      * @param msg 报文
      * @param in  ByteBuf
      * @return 解析结果
-     * @throws DecodeFailException 解码失败
+     * @throws DecodeFailException          解码失败
+     * @throws MessageAnalysisFailException 解析失败
      */
     Object decode(MessageField msg, ByteBuf in) throws DecodeFailException, MessageAnalysisFailException;
 
