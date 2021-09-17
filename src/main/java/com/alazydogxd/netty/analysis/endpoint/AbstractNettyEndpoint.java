@@ -3,17 +3,13 @@ package com.alazydogxd.netty.analysis.endpoint;
 import com.alazydogxd.netty.analysis.exception.BootstrapFailException;
 import com.alazydogxd.netty.analysis.message.MessageAnalysisConfiguration;
 import io.netty.bootstrap.AbstractBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.internal.ObjectUtil;
 import org.slf4j.Logger;
 
 import javax.annotation.PreDestroy;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -39,6 +35,10 @@ public abstract class AbstractNettyEndpoint<T extends AbstractBootstrap<T, C>, C
     protected ChannelInitializer<? extends Channel> handler;
 
     protected ChannelInitializer<? extends Channel> childHandler;
+
+    protected final List<ChannelHandler> handlers = new ArrayList<>(5);
+
+    protected final List<ChannelHandler> childHandlers = new ArrayList<>(5);
 
     protected final Map<ChannelOption<Object>, Object> options = new LinkedHashMap<>(16);
 
@@ -154,6 +154,16 @@ public abstract class AbstractNettyEndpoint<T extends AbstractBootstrap<T, C>, C
                                                      ChannelInitializer<C> childHandler) {
         this.handler = handler;
         this.childHandler = childHandler;
+        return this;
+    }
+
+    public final AbstractNettyEndpoint<T, C> addHandler(ChannelHandler... handler) {
+        handlers.addAll(Arrays.asList(handler));
+        return this;
+    }
+
+    public final AbstractNettyEndpoint<T, C> addChildHandler(ChannelHandler... childHandler) {
+        childHandlers.addAll(Arrays.asList(childHandler));
         return this;
     }
 

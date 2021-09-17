@@ -2,7 +2,6 @@ package com.alazydogxd.netty.analysis.util;
 
 import cn.hutool.core.convert.Convert;
 import com.alazydogxd.netty.analysis.enums.BaseMessageType;
-import com.alazydogxd.netty.analysis.message.CommonMessageField;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
 

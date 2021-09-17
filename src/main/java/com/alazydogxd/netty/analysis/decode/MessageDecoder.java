@@ -44,8 +44,8 @@ public class MessageDecoder {
         prepareToAdd.add(messageFields);
     }
 
-    public Object decode(ByteBuf in, Decode decode) throws DecodeFailException, MessageAnalysisFailException {
-        return decode.decode(getMessageField(), in);
+    public Object decode(ByteBuf in, Analysis analysis) throws DecodeFailException, MessageAnalysisFailException {
+        return analysis.analysis(getMessageField(), in);
     }
 
     public MessageField getCurrentMessageField() {

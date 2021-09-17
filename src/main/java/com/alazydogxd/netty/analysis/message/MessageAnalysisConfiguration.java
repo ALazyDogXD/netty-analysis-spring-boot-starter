@@ -3,7 +3,6 @@ package com.alazydogxd.netty.analysis.message;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.alazydogxd.netty.analysis.decode.AbstractDecodePattern;
-import com.alazydogxd.netty.analysis.decode.MessageFieldDecoder;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +22,7 @@ public class MessageAnalysisConfiguration {
     /**
      * <类型, 解码器>
      */
-    private final Map<String, MessageFieldDecoder<Object>> messageDecoders = new HashMap<>(16);
+    private final Map<String, MessageFieldConverter<Object>> messageConverters = new HashMap<>(16);
 
     /**
      * <所属类别, 报文>
@@ -55,15 +54,15 @@ public class MessageAnalysisConfiguration {
     /**
      * 配置解码器包路径
      *
-     * @param decoderPackage 解码器包路径
+     * @param converterPackage 解码器包路径
      * @return 配置
      */
     @SuppressWarnings("unchecked")
-    public MessageAnalysisConfiguration decoderPackage(String decoderPackage) {
-        final Set<Class<?>> classes = ClassUtil.scanPackageBySuper(decoderPackage, MessageFieldDecoder.class);
+    public MessageAnalysisConfiguration converterPackage(String converterPackage) {
+        final Set<Class<?>> classes = ClassUtil.scanPackageBySuper(converterPackage, MessageFieldConverter.class);
         classes.forEach(decoder -> {
-            MessageFieldDecoder<Object> messageFieldDecoder = (MessageFieldDecoder<Object>) ReflectUtil.newInstance(decoder);
-            messageDecoders.put(messageFieldDecoder.type(), messageFieldDecoder);
+            MessageFieldConverter<Object> messageFieldConverter = (MessageFieldConverter<Object>) ReflectUtil.newInstance(decoder);
+            messageConverters.put(messageFieldConverter.type(), messageFieldConverter);
         });
         return this;
     }
@@ -83,12 +82,12 @@ public class MessageAnalysisConfiguration {
         return this;
     }
 
-    public boolean isHaveDecoder(String type) {
-        return messageDecoders.containsKey(type);
+    public boolean isHaveConverter(String type) {
+        return messageConverters.containsKey(type);
     }
 
-    public MessageFieldDecoder<Object> getMessageDecoder(String type) {
-        return messageDecoders.get(type);
+    public MessageFieldConverter<Object> getMessageDecoder(String type) {
+        return messageConverters.get(type);
     }
 
     public List<MessageField> getMessageField(String k1, String k2) {

@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
  * @description 解码
  */
 @FunctionalInterface
-public interface Decode {
+public interface Analysis {
 
     /**
      * 解码
@@ -19,9 +19,9 @@ public interface Decode {
      * @param msg 报文
      * @param in  ByteBuf
      * @return 解析结果
-     * @throws DecodeFailException          解码失败
      * @throws MessageAnalysisFailException 解析失败
+     * @throws DecodeFailException          解码失败
      */
-    Object decode(MessageField msg, ByteBuf in) throws DecodeFailException, MessageAnalysisFailException;
+    Object analysis(MessageField msg, ByteBuf in) throws MessageAnalysisFailException, DecodeFailException;
 
 }

@@ -1,13 +1,13 @@
 package com.alazydogxd.netty.analysis.handler;
 
 import com.alazydogxd.netty.analysis.decode.AbstractDecodePattern;
-import com.alazydogxd.netty.analysis.decode.pattern.DefaultDecodePattern;
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
 import com.alazydogxd.netty.analysis.exception.MessageAnalysisFailException;
 import com.alazydogxd.netty.analysis.exception.UnExistMessageTypeException;
 import com.alazydogxd.netty.analysis.message.MessageAnalysisConfiguration;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
@@ -52,7 +52,7 @@ public class MessageDecodeHandler extends ByteToMessageDecoder {
             if ((result = baseAnalysis(messageField.getType(), in)) != null) {
                 return result;
             }
-            if (!configuration.isHaveDecoder(messageField.getType())) {
+            if (!configuration.isHaveConverter(messageField.getType())) {
                 throw new UnExistMessageTypeException("不存在报文类型");
             }
         } catch (Exception e) {

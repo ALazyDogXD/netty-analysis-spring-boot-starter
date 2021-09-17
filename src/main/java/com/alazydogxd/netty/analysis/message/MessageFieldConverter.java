@@ -1,6 +1,7 @@
-package com.alazydogxd.netty.analysis.decode;
+package com.alazydogxd.netty.analysis.message;
 
 import com.alazydogxd.netty.analysis.exception.DecodeFailException;
+import com.alazydogxd.netty.analysis.exception.EncodeFailException;
 import com.alazydogxd.netty.analysis.message.MessageField;
 import io.netty.buffer.ByteBuf;
 
@@ -9,7 +10,7 @@ import io.netty.buffer.ByteBuf;
  * @date 2021/7/29 23:33
  * @description 报文字段解析
  */
-public interface MessageFieldDecoder<T> {
+public interface MessageFieldConverter<T> {
 
     /**
      * 解析类型
@@ -27,5 +28,14 @@ public interface MessageFieldDecoder<T> {
      * @throws DecodeFailException 解码失败
      */
     T decode(MessageField msg, ByteBuf in) throws DecodeFailException;
+
+    /**
+     * 报文还原
+     *
+     * @param msg 报文
+     * @param out buffer
+     * @throws EncodeFailException 还原失败
+     */
+    void encode(MessageField msg, ByteBuf out) throws EncodeFailException;
 
 }
